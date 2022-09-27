@@ -3,3 +3,6 @@
 .env
 airflow_settings.yaml
 logs/
+penv/
+ray*
+tests/

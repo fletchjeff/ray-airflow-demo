@@ -76,7 +76,7 @@ Visit the [Ray Project page](https://Ray.io/) for more info on Ray.
 8. In your Airflow DAG Python file, you must include the following in your `default_args` dictionary:
 
     ```python
-    from ray_provider.xcom.ray_backend import RayBackend
+    from include.ray_provider.xcom.ray_backend import RayBackend
     .
     .
     .
@@ -99,7 +99,7 @@ Visit the [Ray Project page](https://Ray.io/) for more info on Ray.
 9. Using the taskflow API, your airflow task should now use the `@ray_task` decorator for any Ray task and add the `ray_conn_id`, parameter as `task_args`, like:
 
     ```python
-    from ray_provider.decorators import ray_task
+    from include.ray_provider.decorators import ray_task
 
     default_args = {
         'on_success_callback': RayBackend.on_success_callback,

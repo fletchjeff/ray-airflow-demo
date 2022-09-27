@@ -1,2 +1,11 @@
-airflow-provider-ray==0.2.1
-xgboost-ray==0.0.5
+ray[tune]
+apache-airflow-providers-http
+filelock
+numpy
+xgboost
+xgboost_ray
+modin
+sklearn
+pyarrow
+#airflow-provider-ray
+git+https://github.com/fletchjeff/airflow-provider-ray

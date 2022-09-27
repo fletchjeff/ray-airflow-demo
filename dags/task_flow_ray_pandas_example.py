@@ -1,4 +1,5 @@
 import json
+from statistics import variance
 import numpy as np
 import pandas as pd
 import ray
@@ -7,22 +8,22 @@ from airflow.operators.dummy_operator import DummyOperator
 
 from datetime import datetime
 
-from ray_provider.decorators.ray_decorators import ray_task
-from ray_provider.xcom.ray_backend import RayBackend
+#from include.ray_provider.decorators.ray_decorators import ray_task
 
+from ray_provider.decorators.ray_decorators import ray_task
+
+default_args = {"owner": "airflow"}
+task_args = {"ray_conn_id": "ray_cluster_connection"}
 
 @dag(
-    default_args={
-        "on_success_callback": RayBackend.on_success_callback,
-        "on_failure_callback": RayBackend.on_failure_callback,
-    },
+    default_args=default_args,
     schedule_interval=None,
     start_date=datetime(2021, 3, 11),
     tags=["finished-pandas-example"],
     catchup=False,
 )
 def task_flow_ray_pandas_example():
-    @ray_task(ray_conn_id="ray_cluster_connection")
+    @ray_task(task_args)
     def build_dataframe() -> pd.DataFrame:
         """
         #### build random dataframe task
@@ -67,9 +68,9 @@ def task_flow_ray_pandas_example():
 
     @ray_task(ray_conn_id="ray_cluster_connection")
     def calc_variance(df: pd.DataFrame) -> int:
-        var = df.T.var()
-        print("Variance Val is %.2f" % var)
-        return var
+        variance = df.T.var()
+        print("Variance Val is %.2f" % variance)
+        return variance
 
     @ray_task(ray_conn_id="ray_cluster_connection")
     def calc_median(df: pd.DataFrame) -> int:
@@ -79,7 +80,7 @@ def task_flow_ray_pandas_example():
 
     @ray_task(ray_conn_id="ray_cluster_connection")
     def load_results(
-        min_val: int, max_val: int, mean: float, std: float, var: float, median: float
+        min_val: int, max_val: int, mean: float, std: float, variance: float, median: float
     ) -> None:
         """
         #### Load task
@@ -90,7 +91,7 @@ def task_flow_ray_pandas_example():
         print("The final max is: %d" % max_val)
         print("The final mean is: %.2f" % mean)
         print("The final std dev is: %.2f" % std)
-        print("The final var is: %.2f" % var)
+        print("The final var is: %.2f" % variance)
         print("The final median is: %.2f" % median)
 
     build_raw_df = build_dataframe()
